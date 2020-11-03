@@ -8,6 +8,7 @@ on:
       - 'main'
       - '*-maintenance'
       - '*-dev'
+      - 'experimental-github-actions'
   pull_request:
     branches:
       - '*'
@@ -24,20 +25,15 @@ jobs:
       fail-fast: false
       matrix:
         container:
-          - version: "2.0"
-            tag: rspec/ci:2.0.0
-          - version: "1.9.3"
-            tag: rspec/ci:1.9.3
           - version: "1.8.7"
             tag: rspec/ci:1.8.7
     env:
       REALLY_GEM_UPDATE_SYSTEM: fromorbitjusttobesure
     steps:
       - uses: actions/checkout@v2
-      - run: script/update_rubygems_and_install_bundler
-      - run: script/clone_all_rspec_repos
-      - run: bundle install --binstubs --standalone
-      - run: bundle binstubs rspec-core
-      - run: ls -al
-      - run: ls -al bin/
-      - run: script/run_build
+      - run: ruby -v
+      - run: gem -v
+      - run: gem update --system '2.7.8'
+      - run: bundle -v
+      - run: bundle install
+      - run: bundle exec rspec --backtrace
